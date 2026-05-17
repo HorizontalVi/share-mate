@@ -1,5 +1,6 @@
 package kz.alibek.sharemate.users;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
+    public User createUser(@Valid @RequestBody UserCreateDto user){
         return userService.createUser(user);
     }
 

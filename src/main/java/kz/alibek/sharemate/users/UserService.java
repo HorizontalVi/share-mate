@@ -1,5 +1,6 @@
 package kz.alibek.sharemate.users;
 
+import jakarta.validation.constraints.Email;
 import kz.alibek.sharemate.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,15 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(()->new NotFoundException("Пользователь с id=%s не найден".formatted(id)));
     }
 
-    public User createUser(User user) {
+
+    public User createUser(UserCreateDto dto) {
+        User user = new User();
+        user.setName(dto.getName());
+        if (userRepository.existsByEmail(dto.getEmail())){
+            throw new RuntimeException("Конфликт.Email существует");
+        }
+        user.setEmail(dto.getEmail());
+
         return userRepository.save(user);
     }
 
@@ -35,6 +44,9 @@ public class UserService {
         User userUpdate = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         if (user.getEmail() != null) {
             userUpdate.setEmail(user.getEmail());
+        }
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new RuntimeException("Конфликт.Email существует");
         }
         if (user.getName() != null) {
             userUpdate.setName(user.getName());
