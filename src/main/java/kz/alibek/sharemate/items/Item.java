@@ -1,6 +1,7 @@
 package kz.alibek.sharemate.items;
 
 import jakarta.persistence.*;
+import kz.alibek.sharemate.users.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,11 @@ import lombok.Setter;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
     String name;
     String description;
-    boolean available;
+    Boolean available;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    User owner;
 }
