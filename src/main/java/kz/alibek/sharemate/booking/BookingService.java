@@ -56,4 +56,48 @@ public class BookingService {
     public List<Booking> findAll (){
         return bookingRepository.findAll();
     }
+
+    public List<Booking> findBookingsByBookerId (long userId){
+        return bookingRepository.findBookingsByBookerId(userId);
+    }
+
+    public List<Booking> findBookingsByOwnerId(long userId){
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не верный"));
+        return bookingRepository.findBookingsByItem_Owner_Id(userId);
+    }
+
+    public BookingResponseDto findBookingById(long userId, long bookingId){
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwner().getId().equals(userId)){
+            throw new NotFoundException("Не найден");
+        }
+        BookingResponseDto bookingResponseDto = new BookingResponseDto();
+        bookingResponseDto.setId(booking.getId());
+        bookingResponseDto.setStart(booking.getStart());
+        bookingResponseDto.setEnd(booking.getEnd());
+        bookingResponseDto.setStatus(booking.getStatus());
+        bookingResponseDto.setBooker(booking.getBooker());
+        bookingResponseDto.setItem(booking.getItem());
+        return bookingResponseDto;
+    }
+
+    public BookingResponseDto updateBookingById(long userId, long bookingId, boolean approved){
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Броанивание не найдено"));
+        if (!booking.getItem().getOwner().getId().equals(userId)){
+            throw new BadRequestException("Вы не являетесь хозяином предмета");
+        }
+        if (approved){
+            booking.setStatus(BookingStatus.APPROVED);
+        } else {
+            booking.setStatus(BookingStatus.REJECTED);
+        }
+        BookingResponseDto dto = new BookingResponseDto();
+        dto.setId(booking.getId());
+        dto.setStart(booking.getStart());
+        dto.setEnd(booking.getEnd());
+        dto.setStatus(booking.getStatus());
+        dto.setBooker(booking.getBooker());
+        dto.setItem(booking.getItem());
+        return dto;
+    }
 }

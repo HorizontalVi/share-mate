@@ -22,8 +22,24 @@ public class BookingController {
         return bookingService.create(userId,dto);
     }
 
+
     @GetMapping
-    public List<Booking> findAll (){
-        return bookingService.findAll();
+    public List<Booking> findById(@RequestHeader("X-Sharer-User-Id") long userId){
+        return bookingService.findBookingsByBookerId(userId);
+    }
+
+    @GetMapping("/owner")
+    public List<Booking> findAllBookingsByOwnerId(@RequestHeader ("X-Sharer-User-Id") long userId){
+        return bookingService.findBookingsByOwnerId(userId);
+    }
+
+    @GetMapping("/{bookingId}")
+    public BookingResponseDto findBookingById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long bookingId){
+        return bookingService.findBookingById(userId,bookingId);
+    }
+
+    @PatchMapping("/{bookingId}")
+    public BookingResponseDto updateBookingById(@RequestHeader("X-Sharer-User-Id") long userId,@PathVariable long bookingId, @RequestParam boolean approved){
+        return bookingService.updateBookingById(userId,bookingId,approved);
     }
 }

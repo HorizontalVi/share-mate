@@ -1,5 +1,7 @@
 package kz.alibek.sharemate.items;
 
+import kz.alibek.sharemate.booking.BookingRepository;
+import kz.alibek.sharemate.booking.BookingService;
 import kz.alibek.sharemate.exception.NotFoundException;
 import kz.alibek.sharemate.users.User;
 import kz.alibek.sharemate.users.UserRepository;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ItemService {
     public final ItemRepository itemRepository;
     public final UserRepository userRepository;
+    public final BookingRepository bookingRepository;
 
     public List<Item> findAll(){
         return itemRepository.findAll();
@@ -64,5 +67,13 @@ public class ItemService {
             return Collections.emptyList();
         }
         return itemRepository.search(text);
+    }
+
+    /*POST /items/{itemId}/comment*/
+
+    public CommentResponseDto createComment(long userId, long itemId, CommentCreateDto comment){
+        userRepository.findById(userId).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        itemRepository.findById(itemId).orElseThrow(()->new NotFoundException("Вещь не найдена"));
+        bookingRepository.findBookingsByBookerId(userId)
     }
 }
