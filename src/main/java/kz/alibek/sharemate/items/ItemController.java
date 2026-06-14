@@ -11,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final CommentRepository commentRepository;
 
     @GetMapping()
     public List<Item> findByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId){
@@ -18,7 +19,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public Item findById (@PathVariable long itemId, @RequestHeader("X-Sharer-User-Id") long userId){
+    public ItemResponseDto findById (@PathVariable long itemId, @RequestHeader("X-Sharer-User-Id") long userId){
         return itemService.findById(itemId,userId);
     }
 
@@ -36,4 +37,10 @@ public class ItemController {
     public List<Item> searchByNameOrDescription(@RequestParam String text){
         return itemService.search(text);
     }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponseDto createComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody CommentCreateDto comment){
+        return itemService.createComment(userId,itemId,comment);
+    }
+
 }

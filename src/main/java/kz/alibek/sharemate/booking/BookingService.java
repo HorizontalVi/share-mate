@@ -20,19 +20,19 @@ public class BookingService {
 
     public BookingResponseDto create(long userId, BookingCreateDto dto) {
         if (dto.getStart() == null) {
-            throw new BadRequestException("Status code is 400");
+            throw new BadRequestException("Start cannot be null");
         }
         if (dto.getEnd() == null) {
-            throw new BadRequestException("Status code is 400");
+            throw new BadRequestException("End cannot be null");
         }
         if (dto.getStart().isAfter(dto.getEnd())) {
-            throw new BadRequestException("Status code is 400");
-        }
-        Item item = itemRepository.findById(dto.getItemId()).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
-        if (item.getAvailable() == false) {
-            throw new BadRequestException("Status code is 400");
+            throw new BadRequestException("start cannot be after than end");
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        Item item = itemRepository.findById(dto.getItemId()).orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        if (item.getAvailable() == false) {
+            throw new BadRequestException("Cannot book unavailable item");
+        }
         Booking booking = new Booking();
         booking.setBooker(user);
         booking.setItem(item);
@@ -91,6 +91,7 @@ public class BookingService {
         } else {
             booking.setStatus(BookingStatus.REJECTED);
         }
+        bookingRepository.save(booking);
         BookingResponseDto dto = new BookingResponseDto();
         dto.setId(booking.getId());
         dto.setStart(booking.getStart());

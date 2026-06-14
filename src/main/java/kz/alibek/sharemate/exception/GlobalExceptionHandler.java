@@ -12,4 +12,9 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleNotFoundException(NotFoundException notFoundException){
         return new ErrorResponse(notFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(BadRequestException badRequestException){
+        return new ErrorResponse(badRequestException.getMessage(),HttpStatus.BAD_REQUEST);
+    }
 }
