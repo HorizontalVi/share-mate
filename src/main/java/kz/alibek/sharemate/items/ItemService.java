@@ -6,6 +6,7 @@ import kz.alibek.sharemate.booking.BookingService;
 import kz.alibek.sharemate.booking.BookingStatus;
 import kz.alibek.sharemate.exception.BadRequestException;
 import kz.alibek.sharemate.exception.NotFoundException;
+import kz.alibek.sharemate.item_request.RequestRepository;
 import kz.alibek.sharemate.users.User;
 import kz.alibek.sharemate.users.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class ItemService {
     public final UserRepository userRepository;
     public final BookingRepository bookingRepository;
     public final CommentRepository commentRepository;
+    public final RequestRepository requestRepository;
 
 
     public ItemResponseDto findById(long itemId, long userId){
@@ -56,7 +58,7 @@ public class ItemService {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
-
+        if(requestRepository.findById())
         item.setOwner(owner);
 
         return itemRepository.save(item);

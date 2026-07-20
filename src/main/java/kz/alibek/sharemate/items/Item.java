@@ -1,6 +1,7 @@
 package kz.alibek.sharemate.items;
 
 import jakarta.persistence.*;
+import kz.alibek.sharemate.item_request.Request;
 import kz.alibek.sharemate.users.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     User owner;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    Request request;
 }
